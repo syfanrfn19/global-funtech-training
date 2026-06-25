@@ -491,7 +491,7 @@
 <!-- ========== REGION PAGE ========== -->
 <div id="page-region" class="page">
   <div class="region-header">
-    <button class="region-back" onclick="goHome()">← Back to regions</button>
+    <button class="region-back" id="region-back-btn" onclick="goHome()">← Back to regions</button>
     <h2 id="region-title">FunTech Explorers</h2>
     <p id="region-subtitle">Select a section below to begin</p>
     <div class="region-header-chips" id="region-chips"></div>
@@ -502,7 +502,7 @@
     <div id="region-tech-reqs"></div>
     <div id="region-tutor-skills"></div>
 
-    <p class="section-eyebrow">Your progress</p>
+    <p class="section-eyebrow" id="eyebrow-progress">Your progress</p>
     <div class="progress-card">
       <div class="progress-text">
         <h4 id="progress-label">0 of 0 sections complete</h4>
@@ -511,7 +511,7 @@
       <div class="prog-pct" id="prog-pct">0%</div>
     </div>
 
-    <p class="section-eyebrow">Sections</p>
+    <p class="section-eyebrow" id="eyebrow-sections">Sections</p>
     <div id="region-sections"></div>
   </div>
 </div>
@@ -526,11 +526,11 @@
       <div class="mod-header-chips" id="mod-chips"></div>
     </div>
     <div class="lessons-card">
-      <div class="lessons-card-header"><h3>Lessons in this module</h3></div>
+      <div class="lessons-card-header" id="lessons-card-header"><h3>Lessons in this module</h3></div>
       <div id="lessons-list"></div>
     </div>
     <div class="outcome-card">
-      <h4>🎯 Module outcome</h4>
+      <h4 id="mod-outcome-label">🎯 Module outcome</h4>
       <p id="mod-outcome"></p>
     </div>
     <button class="start-quiz-btn" id="start-quiz-btn">Take module quiz →</button>
@@ -1237,6 +1237,363 @@ const TYL_QUIZZES = {
   ]
 };
 
+
+// ============================================================
+//  STRINGS (i18n) — all UI text per language
+// ============================================================
+const STRINGS = {
+  id: {
+    backToRegions: '← Kembali ke region',
+    backToRegion:  '← Kembali ke region',
+    backToModule:  '← Kembali ke modul',
+    yourProgress:  'Progres kamu',
+    sectionsOf:    (d,t) => `${d} dari ${t} bagian selesai`,
+    sections:      'Bagian',
+    ageGroup:      'Usia siswa',
+    level:         'Level',
+    totalClasses:  'Total kelas',
+    frequency:     'Frekuensi',
+    classDuration: 'Durasi kelas',
+    group:         'Grup',
+    oneOnOne:      '1-1',
+    techReqs:      '💻 Persyaratan teknis',
+    tutorSkills:   '🎓 Skill yang dibutuhkan tutor',
+    skills: [
+      { icon:'🎓', title:'Sabar & komunikatif', desc:'Mampu menjelaskan konsep digital dengan bahasa sederhana untuk anak usia 5–7 tahun.' },
+      { icon:'💻', title:'Literasi komputer dasar', desc:'Memahami mouse, keyboard, sistem file, browser, dan konsep algoritma sederhana.' },
+      { icon:'🎨', title:'Kreativitas digital', desc:'Familiar dengan Scratch Junior, Canva, Google Slides, Brush Ninja, dan editor grafis.' },
+      { icon:'📊', title:'Google Workspace', desc:'Mampu membimbing penggunaan Google Docs, Sheets, Slides, dan Drive untuk anak-anak.' },
+      { icon:'🎵', title:'Kreasi multimedia', desc:'Memahami dasar animasi GIF, musik digital, dan pembuatan video sederhana.' },
+      { icon:'🔒', title:'Keamanan internet', desc:'Menguasai konsep keamanan online dan kebiasaan digital yang sehat untuk anak.' },
+    ],
+    moduleLabel:   (i,t) => `Modul ${i} dari ${t}`,
+    lessonsIn:     'Pelajaran dalam modul ini',
+    moduleOutcome: '🎯 Hasil pembelajaran modul',
+    startQuiz:     'Mulai kuis modul ini →',
+    lessons:       'pelajaran',
+    quizQs:        'soal kuis',
+    statusPassed:  'Lulus ✓',
+    statusLocked:  'Terkunci',
+    statusStart:   'Mulai',
+    tylDesc:       'Psikologi anak · 5 prinsip · 8 soal kuis',
+    dstUnlocked:   'Siap dikerjakan',
+    dstLocked:     'Selesaikan semua modul & TYL untuk membuka',
+    takeDST:       'Kerjakan DST',
+    locked:        'Terkunci',
+    quizModLabel:  (i) => `Kuis: Modul ${i}`,
+    quizModSub:    'Jawab minimal 4 dari 5 pertanyaan untuk lulus',
+    questionOf:    (c,t) => `Pertanyaan ${c} dari ${t}`,
+    score:         'Skor',
+    seeResults:    'Lihat Hasil',
+    next:          'Lanjut →',
+    resultLabel:   (s,t) => `Kamu menjawab ${s} dari ${t} pertanyaan dengan benar`,
+    passed:        '✓ Lulus!',
+    failed:        '✗ Belum lulus — coba lagi',
+    backToRegionBtn:'Kembali ke region',
+    tryAgain:      'Coba lagi',
+    back:          'Kembali',
+    dstTitle:      'Digital Skill Test',
+    dstDesc:       (lang) => `Tes ini mengevaluasi kesiapanmu mengajar FunTech Explorers di region ${lang}. Pastikan kamu sudah menyelesaikan semua modul dan bagian Teaching Young Learners.`,
+    dstSoon:       '⚠️ Link DST untuk region ini akan segera ditambahkan. Cek kembali nanti atau hubungi koordinatormu.',
+    dstOpen:       'Buka DST →',
+    dstLinkSoon:   'Link segera hadir',
+    tylReading:    '📚 Wajib dibaca',
+    regionSubtitle:(lang) => `${lang} · Pilih bagian untuk mulai`,
+  },
+  tr: {
+    backToRegions: '← Bölgelere dön',
+    backToRegion:  '← Bölgeye dön',
+    backToModule:  '← Modüle dön',
+    yourProgress:  'İlerlemeniz',
+    sectionsOf:    (d,t) => `${t} bölümden ${d} tamamlandı`,
+    sections:      'Bölümler',
+    ageGroup:      'Öğrenci yaşı',
+    level:         'Seviye',
+    totalClasses:  'Toplam ders',
+    frequency:     'Sıklık',
+    classDuration: 'Ders süresi',
+    group:         'Grup',
+    oneOnOne:      'Birebir',
+    techReqs:      '💻 Teknik gereksinimler',
+    tutorSkills:   '🎓 Eğitmen becerileri',
+    skills: [
+      { icon:'🎓', title:'Sabırlı & iletişimci', desc:'5–7 yaş çocuklara dijital kavramları basit dille açıklayabilme.' },
+      { icon:'💻', title:'Temel bilgisayar okuryazarlığı', desc:'Fare, klavye, dosya sistemi, tarayıcı ve basit algoritma konularına hâkim.' },
+      { icon:'🎨', title:'Dijital yaratıcılık', desc:'Scratch Junior, Canva, Google Slides, Brush Ninja ve grafik editörlerine aşina.' },
+      { icon:'📊', title:'Google Workspace', desc:'Çocuklara Google Docs, Sheets, Slides ve Drive kullanımında rehberlik edebilme.' },
+      { icon:'🎵', title:'Multimedya üretimi', desc:'GIF animasyon, dijital müzik ve basit video oluşturma konularında temel bilgi.' },
+      { icon:'🔒', title:'İnternet güvenliği', desc:'Çevrimiçi güvenlik kavramlarına ve çocuklar için sağlıklı dijital alışkanlıklara hâkim.' },
+    ],
+    moduleLabel:   (i,t) => `${t} modülden Modül ${i}`,
+    lessonsIn:     'Bu modüldeki dersler',
+    moduleOutcome: '🎯 Modül kazanımları',
+    startQuiz:     'Bu modülün sınavını başlat →',
+    lessons:       'ders',
+    quizQs:        'sınav sorusu',
+    statusPassed:  'Geçildi ✓',
+    statusLocked:  'Kilitli',
+    statusStart:   'Başla',
+    tylDesc:       'Çocuk psikolojisi · 5 ilke · 8 sınav sorusu',
+    dstUnlocked:   'Almaya hazır',
+    dstLocked:     'Tüm modülleri & TYL'i tamamla',
+    takeDST:       'DST'yi Al',
+    locked:        'Kilitli',
+    quizModLabel:  (i) => `Sınav: Modül ${i}`,
+    quizModSub:    'Geçmek için 5 sorudan en az 4'ünü doğru yanıtlayın',
+    questionOf:    (c,t) => `${t} sorudan ${c}. soru`,
+    score:         'Puan',
+    seeResults:    'Sonuçları Gör',
+    next:          'Sonraki →',
+    resultLabel:   (s,t) => `${t} sorudan ${s} tanesini doğru yanıtladınız`,
+    passed:        '✓ Geçildi!',
+    failed:        '✗ Henüz değil — tekrar deneyin',
+    backToRegionBtn:'Bölgeye dön',
+    tryAgain:      'Tekrar dene',
+    back:          'Geri',
+    dstTitle:      'Dijital Beceri Testi',
+    dstDesc:       (lang) => `Bu test, ${lang} bölgesinde FunTech Explorers öğretmeye hazır olup olmadığınızı değerlendirir. Tüm modülleri ve Teaching Young Learners bölümünü tamamladığınızdan emin olun.`,
+    dstSoon:       '⚠️ Bu bölge için DST bağlantısı yakında eklenecek. Daha sonra tekrar kontrol edin veya koordinatörünüzle iletişime geçin.',
+    dstOpen:       'DST'yi Aç →',
+    dstLinkSoon:   'Bağlantı yakında',
+    tylReading:    '📚 Zorunlu okuma',
+    regionSubtitle:(lang) => `${lang} · Başlamak için bir bölüm seçin`,
+  },
+  it: {
+    backToRegions: '← Torna alle regioni',
+    backToRegion:  '← Torna alla regione',
+    backToModule:  '← Torna al modulo',
+    yourProgress:  'I tuoi progressi',
+    sectionsOf:    (d,t) => `${d} di ${t} sezioni completate`,
+    sections:      'Sezioni',
+    ageGroup:      'Età degli studenti',
+    level:         'Livello',
+    totalClasses:  'Lezioni totali',
+    frequency:     'Frequenza',
+    classDuration: 'Durata della lezione',
+    group:         'Gruppo',
+    oneOnOne:      '1-a-1',
+    techReqs:      '💻 Requisiti tecnici',
+    tutorSkills:   '🎓 Competenze richieste al tutor',
+    skills: [
+      { icon:'🎓', title:'Paziente e comunicativo', desc:'In grado di spiegare concetti digitali con un linguaggio semplice per bambini di 5–7 anni.' },
+      { icon:'💻', title:'Alfabetizzazione informatica di base', desc:'A proprio agio con mouse, tastiera, sistema di file, browser e concetti algoritmici semplici.' },
+      { icon:'🎨', title:'Creatività digitale', desc:'Familiare con Scratch Junior, Canva, Google Slides, Brush Ninja e editor grafici.' },
+      { icon:'📊', title:'Google Workspace', desc:'In grado di guidare i bambini nell'uso di Google Docs, Sheets, Slides e Drive.' },
+      { icon:'🎵', title:'Produzione multimediale', desc:'Conoscenza di base di animazione GIF, musica digitale e creazione video semplice.' },
+      { icon:'🔒', title:'Sicurezza internet', desc:'Padronanza dei concetti di sicurezza online e abitudini digitali sane per i bambini.' },
+    ],
+    moduleLabel:   (i,t) => `Modulo ${i} di ${t}`,
+    lessonsIn:     'Lezioni in questo modulo',
+    moduleOutcome: '🎯 Risultati del modulo',
+    startQuiz:     'Inizia il quiz del modulo →',
+    lessons:       'lezioni',
+    quizQs:        'domande quiz',
+    statusPassed:  'Superato ✓',
+    statusLocked:  'Bloccato',
+    statusStart:   'Inizia',
+    tylDesc:       'Psicologia infantile · 5 principi · 8 domande quiz',
+    dstUnlocked:   'Pronto per sostenere',
+    dstLocked:     'Completa tutti i moduli e il TYL per sbloccare',
+    takeDST:       'Sostieni il DST',
+    locked:        'Bloccato',
+    quizModLabel:  (i) => `Quiz: Modulo ${i}`,
+    quizModSub:    'Rispondi correttamente ad almeno 4 delle 5 domande per passare',
+    questionOf:    (c,t) => `Domanda ${c} di ${t}`,
+    score:         'Punteggio',
+    seeResults:    'Vedi Risultati',
+    next:          'Avanti →',
+    resultLabel:   (s,t) => `Hai risposto correttamente a ${s} di ${t} domande`,
+    passed:        '✓ Superato!',
+    failed:        '✗ Non ancora — riprova',
+    backToRegionBtn:'Torna alla regione',
+    tryAgain:      'Riprova',
+    back:          'Indietro',
+    dstTitle:      'Test delle Competenze Digitali',
+    dstDesc:       (lang) => `Questo test valuta la tua prontezza a insegnare FunTech Explorers nella regione ${lang}. Assicurati di aver completato tutti i moduli e la sezione Teaching Young Learners.`,
+    dstSoon:       '⚠️ Il link DST per questa regione sarà aggiunto presto. Ricontrolla più tardi o contatta il tuo coordinatore.',
+    dstOpen:       'Apri DST →',
+    dstLinkSoon:   'Link in arrivo',
+    tylReading:    '📚 Lettura obbligatoria',
+    regionSubtitle:(lang) => `${lang} · Seleziona una sezione per iniziare`,
+  },
+  pl: {
+    backToRegions: '← Powrót do regionów',
+    backToRegion:  '← Powrót do regionu',
+    backToModule:  '← Powrót do modułu',
+    yourProgress:  'Twoje postępy',
+    sectionsOf:    (d,t) => `${d} z ${t} sekcji ukończonych`,
+    sections:      'Sekcje',
+    ageGroup:      'Wiek uczniów',
+    level:         'Poziom',
+    totalClasses:  'Łączna liczba lekcji',
+    frequency:     'Częstotliwość',
+    classDuration: 'Czas trwania lekcji',
+    group:         'Grupa',
+    oneOnOne:      '1 na 1',
+    techReqs:      '💻 Wymagania techniczne',
+    tutorSkills:   '🎓 Wymagane umiejętności tutora',
+    skills: [
+      { icon:'🎓', title:'Cierpliwość i komunikatywność', desc:'Umiejętność wyjaśniania pojęć cyfrowych prostym językiem dzieciom w wieku 5–7 lat.' },
+      { icon:'💻', title:'Podstawowa obsługa komputera', desc:'Znajomość myszy, klawiatury, systemu plików, przeglądarki i prostych algorytmów.' },
+      { icon:'🎨', title:'Kreatywność cyfrowa', desc:'Znajomość Scratch Junior, Canva, Google Slides, Brush Ninja i edytorów graficznych.' },
+      { icon:'📊', title:'Google Workspace', desc:'Umiejętność prowadzenia dzieci przez Google Docs, Sheets, Slides i Drive.' },
+      { icon:'🎵', title:'Tworzenie multimediów', desc:'Podstawowa wiedza z zakresu animacji GIF, muzyki cyfrowej i prostego montażu wideo.' },
+      { icon:'🔒', title:'Bezpieczeństwo w internecie', desc:'Znajomość zasad bezpieczeństwa online i zdrowych nawyków cyfrowych dla dzieci.' },
+    ],
+    moduleLabel:   (i,t) => `Moduł ${i} z ${t}`,
+    lessonsIn:     'Lekcje w tym module',
+    moduleOutcome: '🎯 Rezultat modułu',
+    startQuiz:     'Rozpocznij quiz modułu →',
+    lessons:       'lekcje',
+    quizQs:        'pytania quizu',
+    statusPassed:  'Zaliczono ✓',
+    statusLocked:  'Zablokowany',
+    statusStart:   'Rozpocznij',
+    tylDesc:       'Psychologia dziecka · 5 zasad · 8 pytań quizu',
+    dstUnlocked:   'Gotowy do zaliczenia',
+    dstLocked:     'Ukończ wszystkie moduły i TYL, aby odblokować',
+    takeDST:       'Przystąp do DST',
+    locked:        'Zablokowany',
+    quizModLabel:  (i) => `Quiz: Moduł ${i}`,
+    quizModSub:    'Odpowiedz poprawnie na co najmniej 4 z 5 pytań, aby zaliczyć',
+    questionOf:    (c,t) => `Pytanie ${c} z ${t}`,
+    score:         'Wynik',
+    seeResults:    'Zobacz wyniki',
+    next:          'Dalej →',
+    resultLabel:   (s,t) => `Odpowiedziałeś poprawnie na ${s} z ${t} pytań`,
+    passed:        '✓ Zaliczono!',
+    failed:        '✗ Jeszcze nie — spróbuj ponownie',
+    backToRegionBtn:'Powrót do regionu',
+    tryAgain:      'Spróbuj ponownie',
+    back:          'Wróć',
+    dstTitle:      'Test umiejętności cyfrowych',
+    dstDesc:       (lang) => `Ten test ocenia Twoją gotowość do nauczania FunTech Explorers w regionie ${lang}. Upewnij się, że ukończyłeś wszystkie moduły i sekcję Teaching Young Learners.`,
+    dstSoon:       '⚠️ Link do DST dla tego regionu zostanie wkrótce dodany. Sprawdź ponownie później lub skontaktuj się z koordynatorem.',
+    dstOpen:       'Otwórz DST →',
+    dstLinkSoon:   'Link wkrótce',
+    tylReading:    '📚 Obowiązkowa lektura',
+    regionSubtitle:(lang) => `${lang} · Wybierz sekcję, aby rozpocząć`,
+  },
+  es: {
+    backToRegions: '← Volver a regiones',
+    backToRegion:  '← Volver a la región',
+    backToModule:  '← Volver al módulo',
+    yourProgress:  'Tu progreso',
+    sectionsOf:    (d,t) => `${d} de ${t} secciones completadas`,
+    sections:      'Secciones',
+    ageGroup:      'Edad del estudiante',
+    level:         'Nivel',
+    totalClasses:  'Total de clases',
+    frequency:     'Frecuencia',
+    classDuration: 'Duración de la clase',
+    group:         'Grupo',
+    oneOnOne:      '1 a 1',
+    techReqs:      '💻 Requisitos técnicos',
+    tutorSkills:   '🎓 Habilidades requeridas del tutor',
+    skills: [
+      { icon:'🎓', title:'Paciente y comunicativo', desc:'Capaz de explicar conceptos digitales en lenguaje simple para niños de 5–7 años.' },
+      { icon:'💻', title:'Alfabetización informática básica', desc:'Cómodo con ratón, teclado, sistema de archivos, navegador y conceptos algorítmicos simples.' },
+      { icon:'🎨', title:'Creatividad digital', desc:'Familiarizado con Scratch Junior, Canva, Google Slides, Brush Ninja y editores gráficos.' },
+      { icon:'📊', title:'Google Workspace', desc:'Capaz de guiar a los niños en el uso de Google Docs, Sheets, Slides y Drive.' },
+      { icon:'🎵', title:'Creación multimedia', desc:'Conocimiento básico de animación GIF, música digital y creación de video simple.' },
+      { icon:'🔒', title:'Seguridad en internet', desc:'Dominio de conceptos de seguridad en línea y hábitos digitales saludables para niños.' },
+    ],
+    moduleLabel:   (i,t) => `Módulo ${i} de ${t}`,
+    lessonsIn:     'Lecciones en este módulo',
+    moduleOutcome: '🎯 Resultado del módulo',
+    startQuiz:     'Iniciar quiz del módulo →',
+    lessons:       'lecciones',
+    quizQs:        'preguntas de quiz',
+    statusPassed:  'Aprobado ✓',
+    statusLocked:  'Bloqueado',
+    statusStart:   'Iniciar',
+    tylDesc:       'Psicología infantil · 5 principios · 8 preguntas de quiz',
+    dstUnlocked:   'Listo para realizar',
+    dstLocked:     'Completa todos los módulos y el TYL para desbloquear',
+    takeDST:       'Realizar DST',
+    locked:        'Bloqueado',
+    quizModLabel:  (i) => `Quiz: Módulo ${i}`,
+    quizModSub:    'Responde al menos 4 de 5 preguntas correctamente para aprobar',
+    questionOf:    (c,t) => `Pregunta ${c} de ${t}`,
+    score:         'Puntuación',
+    seeResults:    'Ver resultados',
+    next:          'Siguiente →',
+    resultLabel:   (s,t) => `Respondiste correctamente ${s} de ${t} preguntas`,
+    passed:        '✓ ¡Aprobado!',
+    failed:        '✗ Aún no — inténtalo de nuevo',
+    backToRegionBtn:'Volver a la región',
+    tryAgain:      'Intentar de nuevo',
+    back:          'Volver',
+    dstTitle:      'Prueba de Habilidad Digital',
+    dstDesc:       (lang) => `Esta prueba evalúa tu preparación para enseñar FunTech Explorers en la región ${lang}. Asegúrate de haber completado todos los módulos y la sección Teaching Young Learners.`,
+    dstSoon:       '⚠️ El enlace DST para esta región se añadirá pronto. Vuelve a comprobarlo más tarde o contacta a tu coordinador.',
+    dstOpen:       'Abrir DST →',
+    dstLinkSoon:   'Enlace próximamente',
+    tylReading:    '📚 Lectura obligatoria',
+    regionSubtitle:(lang) => `${lang} · Selecciona una sección para comenzar`,
+  },
+  br: {
+    backToRegions: '← Voltar às regiões',
+    backToRegion:  '← Voltar à região',
+    backToModule:  '← Voltar ao módulo',
+    yourProgress:  'Seu progresso',
+    sectionsOf:    (d,t) => `${d} de ${t} seções concluídas`,
+    sections:      'Seções',
+    ageGroup:      'Idade do aluno',
+    level:         'Nível',
+    totalClasses:  'Total de aulas',
+    frequency:     'Frequência',
+    classDuration: 'Duração da aula',
+    group:         'Grupo',
+    oneOnOne:      '1 a 1',
+    techReqs:      '💻 Requisitos técnicos',
+    tutorSkills:   '🎓 Habilidades requeridas do tutor',
+    skills: [
+      { icon:'🎓', title:'Paciente e comunicativo', desc:'Capaz de explicar conceitos digitais em linguagem simples para crianças de 5–7 anos.' },
+      { icon:'💻', title:'Letramento digital básico', desc:'Confortável com mouse, teclado, sistema de arquivos, navegador e conceitos algorítmicos simples.' },
+      { icon:'🎨', title:'Criatividade digital', desc:'Familiarizado com Scratch Junior, Canva, Google Slides, Brush Ninja e editores gráficos.' },
+      { icon:'📊', title:'Google Workspace', desc:'Capaz de guiar crianças no uso do Google Docs, Sheets, Slides e Drive.' },
+      { icon:'🎵', title:'Criação multimídia', desc:'Conhecimento básico de animação GIF, música digital e criação de vídeo simples.' },
+      { icon:'🔒', title:'Segurança na internet', desc:'Domínio dos conceitos de segurança on-line e hábitos digitais saudáveis para crianças.' },
+    ],
+    moduleLabel:   (i,t) => `Módulo ${i} de ${t}`,
+    lessonsIn:     'Lições neste módulo',
+    moduleOutcome: '🎯 Resultado do módulo',
+    startQuiz:     'Iniciar quiz do módulo →',
+    lessons:       'lições',
+    quizQs:        'perguntas de quiz',
+    statusPassed:  'Aprovado ✓',
+    statusLocked:  'Bloqueado',
+    statusStart:   'Iniciar',
+    tylDesc:       'Psicologia infantil · 5 princípios · 8 perguntas de quiz',
+    dstUnlocked:   'Pronto para realizar',
+    dstLocked:     'Conclua todos os módulos e o TYL para desbloquear',
+    takeDST:       'Realizar DST',
+    locked:        'Bloqueado',
+    quizModLabel:  (i) => `Quiz: Módulo ${i}`,
+    quizModSub:    'Responda pelo menos 4 de 5 perguntas corretamente para passar',
+    questionOf:    (c,t) => `Pergunta ${c} de ${t}`,
+    score:         'Pontuação',
+    seeResults:    'Ver resultados',
+    next:          'Próximo →',
+    resultLabel:   (s,t) => `Você respondeu corretamente ${s} de ${t} perguntas`,
+    passed:        '✓ Aprovado!',
+    failed:        '✗ Ainda não — tente novamente',
+    backToRegionBtn:'Voltar à região',
+    tryAgain:      'Tentar novamente',
+    back:          'Voltar',
+    dstTitle:      'Teste de Habilidade Digital',
+    dstDesc:       (lang) => `Este teste avalia sua prontidão para ensinar FunTech Explorers na região ${lang}. Certifique-se de ter concluído todos os módulos e a seção Teaching Young Learners.`,
+    dstSoon:       '⚠️ O link DST para esta região será adicionado em breve. Verifique novamente mais tarde ou entre em contato com seu coordenador.',
+    dstOpen:       'Abrir DST →',
+    dstLinkSoon:   'Link em breve',
+    tylReading:    '📚 Leitura obrigatória',
+    regionSubtitle:(lang) => `${lang} · Selecione uma seção para começar`,
+  },
+};
+
+function S() { return STRINGS[currentRegion] || STRINGS.id; }
+
 // ============================================================
 //  STATE
 // ============================================================
@@ -1273,7 +1630,7 @@ function openRegion(rid) {
   const r = REGIONS[rid];
   document.getElementById('nav-badge').textContent = r.flag + ' ' + r.lang;
   document.getElementById('region-title').textContent = r.flag + ' ' + r.name;
-  document.getElementById('region-subtitle').textContent = r.lang + ' · Select a section to begin';
+  document.getElementById('region-subtitle').textContent = S().regionSubtitle(r.lang);
 
   // chips
   const chips = document.getElementById('region-chips');
@@ -1282,29 +1639,29 @@ function openRegion(rid) {
   // info grid — 4 top stats
   const ig = document.getElementById('region-info-grid');
   ig.innerHTML = [
-    {label:'Age group', val: r.age},
-    {label:'Level', val: r.level},
-    {label:'Total classes', val: r.duration},
-    {label:'Frequency', val: r.freq},
+    {label:S().ageGroup, val: r.age},
+    {label:S().level, val: r.level},
+    {label:S().totalClasses, val: r.duration},
+    {label:S().frequency, val: r.freq},
   ].map(i => `<div class="info-stat"><div class="info-stat-label">${i.label}</div><div class="info-stat-value">${i.val}</div></div>`).join('');
 
   // duration detail card
   const dg = document.getElementById('region-duration-detail');
   dg.innerHTML = `
     <div class="detail-card">
-      <div class="detail-card-title"><span>⏱️</span> Class duration</div>
+      <div class="detail-card-title"><span>⏱️</span> ${S().classDuration}</div>
       <div class="duration-row">
         <div class="duration-badge">
           <div class="duration-badge-icon">👥</div>
           <div class="duration-badge-text">
-            <div class="duration-badge-label">Group</div>
+            <div class="duration-badge-label">${S().group}</div>
             <div class="duration-badge-val">${r.durationGroup || r.classTime}</div>
           </div>
         </div>
         <div class="duration-badge">
           <div class="duration-badge-icon">👤</div>
           <div class="duration-badge-text">
-            <div class="duration-badge-label">1-on-1</div>
+            <div class="duration-badge-label">${S().oneOnOne}</div>
             <div class="duration-badge-val">${r.duration11 || '30 min'}</div>
           </div>
         </div>
@@ -1316,7 +1673,7 @@ function openRegion(rid) {
   if (r.tech) {
     tr2.innerHTML = `
       <div class="detail-card">
-        <div class="detail-card-title"><span>💻</span> Technical requirements</div>
+        <div class="detail-card-title">${S().techReqs}</div>
         <div class="tech-grid">
           ${r.tech.map(t => `<div class="tech-item"><div class="tech-item-label">${t.label}</div><div class="tech-item-val">${t.val}</div></div>`).join('')}
         </div>
@@ -1327,14 +1684,9 @@ function openRegion(rid) {
   const ts = document.getElementById('region-tutor-skills');
   ts.innerHTML = `
     <div class="detail-card">
-      <div class="detail-card-title"><span>🎓</span> Tutor skills required</div>
+      <div class="detail-card-title">${S().tutorSkills}</div>
       <div class="skill-list">
-        <div class="skill-item"><div class="skill-icon">🎓</div><div class="skill-content"><h4>Patient &amp; communicative</h4><p>Able to explain digital concepts in simple language for children aged 5–7 years.</p></div></div>
-        <div class="skill-item"><div class="skill-icon">💻</div><div class="skill-content"><h4>Basic computer literacy</h4><p>Comfortable with mouse, keyboard, file system, browser, and simple algorithm concepts.</p></div></div>
-        <div class="skill-item"><div class="skill-icon">🎨</div><div class="skill-content"><h4>Digital creativity</h4><p>Familiar with Scratch Junior, Canva, Google Slides, Brush Ninja, and basic graphic editors.</p></div></div>
-        <div class="skill-item"><div class="skill-icon">📊</div><div class="skill-content"><h4>Google Workspace</h4><p>Able to guide children through Google Docs, Sheets, Slides, and Drive.</p></div></div>
-        <div class="skill-item"><div class="skill-icon">🎵</div><div class="skill-content"><h4>Multimedia creation</h4><p>Basic understanding of GIF animation, digital music, and simple video creation.</p></div></div>
-        <div class="skill-item"><div class="skill-icon">🔒</div><div class="skill-content"><h4>Internet safety</h4><p>Understands online safety concepts and healthy digital habits for young children.</p></div></div>
+        ${S().skills.map(sk => `<div class="skill-item"><div class="skill-icon">${sk.icon}</div><div class="skill-content"><h4>${sk.title}</h4><p>${sk.desc}</p></div></div>`).join('')}
       </div>
     </div>`;
 
@@ -1351,7 +1703,7 @@ function renderRegionSections() {
   const done = prog.modules.filter(Boolean).length + (prog.tyl ? 1 : 0);
   const total = r.modules.length + 1; // +1 for TYL
   const pct = Math.round((done / total) * 100);
-  document.getElementById('progress-label').textContent = `${done} of ${total} sections complete`;
+  document.getElementById('progress-label').textContent = S().sectionsOf(done, total);
   document.getElementById('prog-fill').style.width = pct + '%';
   document.getElementById('prog-pct').textContent = pct + '%';
 
@@ -1366,8 +1718,8 @@ function renderRegionSections() {
       <div class="section-card-header">
         <div class="sc-icon purple">📚</div>
         <div class="sc-info">
-          <h3>Module ${i+1}: ${m.title}</h3>
-          <p>${m.lessons.length} lessons · 5 quiz questions</p>
+          <h3>M${i+1}: ${m.title}</h3>
+          <p>${m.lessons.length} ${S().lessons} · 5 ${S().quizQs}</p>
         </div>
         <div class="sc-status">
           <div class="status-dot ${isDone ? 'done' : isLocked ? 'locked' : 'active'}"></div>
@@ -1384,11 +1736,11 @@ function renderRegionSections() {
       <div class="sc-icon teal">🧡</div>
       <div class="sc-info">
         <h3>Teaching Young Learners</h3>
-        <p>Child psychology · 5 principles · 8 quiz questions</p>
+        <p>${S().tylDesc}</p>
       </div>
       <div class="sc-status">
         <div class="status-dot ${tylDone ? 'done' : 'active'}"></div>
-        <span class="status-label ${tylDone ? 'done' : ''}">${tylDone ? 'Passed ✓' : 'Start'}</span>
+        <span class="status-label ${tylDone ? 'done' : ''}">${tylDone ? S().statusPassed : S().statusStart}</span>
       </div>
     </div>
   </div>`;
@@ -1401,16 +1753,28 @@ function renderRegionSections() {
       <div class="sc-icon amber">🏆</div>
       <div class="sc-info">
         <h3>Digital Skill Test (DST)</h3>
-        <p>${dstUnlocked ? 'Ready to take' : 'Complete all modules & TYL to unlock'}</p>
+        <p>${dstUnlocked ? S().dstUnlocked : S().dstLocked}</p>
       </div>
       <div class="sc-status">
         <div class="status-dot ${dstUnlocked ? 'active' : 'locked'}"></div>
-        <span class="status-label">${dstUnlocked ? 'Take DST' : 'Locked'}</span>
+        <span class="status-label">${dstUnlocked ? S().takeDST : S().locked}</span>
       </div>
     </div>
   </div>`;
 
   sections.innerHTML = html;
+  // update static eyebrow labels
+  const ep = document.getElementById('eyebrow-progress');
+  const es = document.getElementById('eyebrow-sections');
+  if (ep) ep.textContent = S().yourProgress;
+  if (es) es.textContent = S().sections;
+  const rb = document.getElementById('region-back-btn');
+  if (rb) rb.textContent = S().backToRegions;
+  // update lessons card header & outcome label when inside module
+  const lch = document.getElementById('lessons-card-header');
+  if (lch) lch.querySelector('h3').textContent = S().lessonsIn;
+  const mol = document.getElementById('mod-outcome-label');
+  if (mol) mol.textContent = S().moduleOutcome;
 }
 
 function openModule(idx) {
@@ -1418,7 +1782,7 @@ function openModule(idx) {
   const r = REGIONS[currentRegion];
   const m = r.modules[idx];
 
-  document.getElementById('mod-num-label').textContent = `Module ${idx + 1} of ${r.modules.length}`;
+  document.getElementById('mod-num-label').textContent = S().moduleLabel(idx + 1, r.modules.length);
   document.getElementById('mod-title').textContent = m.title;
   document.getElementById('mod-chips').innerHTML = [
     r.duration, r.classTime, m.lessons.length + ' lessons'
@@ -1432,7 +1796,13 @@ function openModule(idx) {
     </div>`).join('');
 
   document.getElementById('mod-outcome').textContent = m.outcome;
+  const lch = document.getElementById('lessons-card-header');
+  if (lch) lch.querySelector('h3').textContent = S().lessonsIn;
+  const mol = document.getElementById('mod-outcome-label');
+  if (mol) mol.textContent = S().moduleOutcome;
+  document.getElementById('mod-back-btn').textContent = S().backToRegion;
   document.getElementById('mod-back-btn').onclick = () => { showPage('region'); renderRegionSections(); };
+  document.getElementById('start-quiz-btn').textContent = S().startQuiz;
   document.getElementById('start-quiz-btn').onclick = () => startQuiz(false);
 
   showPage('module');
@@ -1442,9 +1812,9 @@ function openTYL() {
   const tyl = TYL[currentRegion];
   const content = document.getElementById('tyl-content');
 
-  let html = `<button class="mod-back" onclick="showPage('region'); renderRegionSections();">← Back to region</button>
+  let html = `<button class="mod-back" onclick="showPage('region'); renderRegionSections();">${S().backToRegion}</button>
   <div class="tyl-header">
-    <div class="tyl-eyebrow">📚 Required reading</div>
+    <div class="tyl-eyebrow">${S().tylReading}</div>
     <h2>${tyl.title}</h2>
     <p>${tyl.subtitle}</p>
   </div>
@@ -1460,7 +1830,7 @@ function openTYL() {
     <h3><span class="tyl-icon">🚨</span> ${tyl.scenariosTitle}</h3>
     ${tyl.scenarios.map(s => `<div class="scenario-item"><h4>${s.title}</h4><p>${s.desc}</p></div>`).join('')}
   </div>
-  <button class="start-quiz-btn" onclick="startQuiz(true)" style="margin-top:1rem;">Take TYL Quiz →</button>`;
+  <button class="start-quiz-btn" onclick="startQuiz(true)" style="margin-top:1rem;">${tyl.quizBtnLabel || (S().startQuiz.replace('→', '').trim() + ' →')}</button>`;
 
   content.innerHTML = html;
   showPage('tyl');
@@ -1472,13 +1842,13 @@ function openDST() {
   const hasLink = r.dstLink && r.dstLink.length > 0;
 
   content.innerHTML = `
-    <button class="mod-back" onclick="showPage('region'); renderRegionSections();" style="text-align:left; display:block; margin-bottom:1.5rem;">← Back to region</button>
+    <button class="mod-back" onclick="showPage('region'); renderRegionSections();" style="text-align:left; display:block; margin-bottom:1.5rem;">${S().backToRegion}</button>
     <div class="dst-icon">🏆</div>
-    <h2>Digital Skill Test</h2>
-    <p>This test evaluates your readiness to teach FunTech Explorers in the ${r.lang} region. Make sure you have completed all modules and the Teaching Young Learners section.</p>
-    ${!hasLink ? `<div class="dst-locked-notice">⚠️ The DST link for this region will be added soon. Please check back later or contact your coordinator.</div>` : ''}
+    <h2>${S().dstTitle}</h2>
+    <p>${S().dstDesc(r.lang)}</p>
+    ${!hasLink ? `<div class="dst-locked-notice">${S().dstSoon}</div>` : ''}
     <a class="dst-btn" ${hasLink ? `href="${r.dstLink}" target="_blank"` : ''} ${!hasLink ? 'style="opacity:.4; pointer-events:none;"' : ''}>
-      ${hasLink ? 'Open DST →' : 'Link coming soon'}
+      ${hasLink ? S().dstOpen : S().dstLinkSoon}
     </a>`;
 
   showPage('dst');
@@ -1497,14 +1867,15 @@ function startQuiz(isTYL) {
   const tyl = TYL[currentRegion];
   const modTitle = isTYL
     ? (tyl ? tyl.quizTitle : 'Teaching Young Learners Quiz')
-    : `Quiz: Module ${currentModuleIndex + 1}`;
+    : S().quizModLabel(currentModuleIndex + 1);
   const modSub = isTYL
-    ? (tyl ? tyl.quizSubtitle : 'Answer at least 6 of 8 questions to pass')
-    : 'Answer at least 4 of 5 questions correctly to pass';
+    ? (tyl ? tyl.quizSubtitle : S().quizModSub)
+    : S().quizModSub;
 
   document.getElementById('quiz-title').textContent = modTitle;
   document.getElementById('quiz-subtitle').textContent = modSub;
 
+  document.getElementById('quiz-back-btn').textContent = isTYL ? S().backToRegion : S().backToModule;
   document.getElementById('quiz-back-btn').onclick = () => {
     if (isTYL) openTYL();
     else openModule(currentModuleIndex);
@@ -1527,16 +1898,16 @@ function renderQuestion() {
 
   qa.innerHTML = `
     <div class="question-card">
-      <div class="question-num">Question ${quizState.current + 1} of ${total}</div>
+      <div class="question-num">${S().questionOf(quizState.current + 1, total)}</div>
       <div class="question-text">${q.q}</div>
       <div class="options">
         ${q.opts.map((opt, i) => `<button class="option-btn" onclick="selectAnswer(${i})">${opt}</button>`).join('')}
       </div>
     </div>
     <div class="quiz-nav">
-      <span style="font-size:13px; color:var(--text-tertiary)">Score: ${quizState.score}/${quizState.current}</span>
+      <span style="font-size:13px; color:var(--text-tertiary)">${S().score}: ${quizState.score}/${quizState.current}</span>
       <button class="quiz-next-btn" id="quiz-next" onclick="nextQuestion()" disabled>
-        ${quizState.current + 1 === total ? 'See Results' : 'Next →'}
+        ${quizState.current + 1 === total ? S().seeResults : S().next}
       </button>
     </div>`;
 }
@@ -1588,13 +1959,13 @@ function showResult() {
     <div class="quiz-result">
       <div class="result-icon">${passed ? '🎉' : '😔'}</div>
       <div class="result-score">${quizState.score} / ${total}</div>
-      <div class="result-label">You answered ${quizState.score} of ${total} questions correctly</div>
-      <div class="result-badge ${passed ? 'pass' : 'fail'}">${passed ? '✓ Passed!' : '✗ Not yet — try again'}</div>
+      <div class="result-label">${S().resultLabel(quizState.score, total)}</div>
+      <div class="result-badge ${passed ? 'pass' : 'fail'}">${passed ? S().passed : S().failed}</div>
       <div>
         ${passed
-          ? `<button class="result-btn secondary" onclick="backFromQuiz()">Back to region</button>`
-          : `<button class="result-btn" onclick="startQuiz(${quizState.isTYL})">Try again</button>
-             <button class="result-btn secondary" onclick="backFromQuiz()">Back</button>`
+          ? `<button class="result-btn secondary" onclick="backFromQuiz()">${S().backToRegionBtn}</button>`
+          : `<button class="result-btn" onclick="startQuiz(${quizState.isTYL})">${S().tryAgain}</button>
+             <button class="result-btn secondary" onclick="backFromQuiz()">${S().back}</button>`
         }
       </div>
     </div>`;
